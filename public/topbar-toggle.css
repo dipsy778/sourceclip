@@ -4,53 +4,20 @@
   gap: 8px;
 }
 
-.capture-toggle {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 34px;
-  height: 20px;
-  cursor: pointer;
-  flex: 0 0 auto;
+.sourceclip-status {
+  width: 24px;
+  flex: 0 0 24px;
+  text-align: right;
+  font-size: 10.5px;
+  font-weight: 600;
+  line-height: 1;
+  user-select: none;
 }
 
-.capture-toggle input {
-  position: absolute;
-  opacity: 0;
-  pointer-events: none;
+.sourceclip-status[data-enabled='true'] {
+  color: #65b77a;
 }
 
-.capture-toggle-track {
-  width: 34px;
-  height: 20px;
-  border-radius: 999px;
-  background: var(--border-strong);
-  position: relative;
-  transition: background 150ms ease;
-}
-
-.capture-toggle-track::after {
-  content: '';
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: #fff;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, .18);
-  transition: transform 150ms ease;
-}
-
-.capture-toggle input:checked + .capture-toggle-track {
-  background: #4f8f63;
-}
-
-.capture-toggle input:checked + .capture-toggle-track::after {
-  transform: translateX(14px);
-}
-
-.capture-toggle:focus-within {
-  outline: none;
+.sourceclip-status[data-enabled='false'] {
+  color: var(--muted);
 }
