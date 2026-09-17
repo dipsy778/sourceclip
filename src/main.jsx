@@ -205,26 +205,28 @@ function App() {
             <p>{clips.length} saved {clips.length === 1 ? 'clip' : 'clips'}</p>
           </div>
         </div>
-        <IconButton label="Settings" active={showSettings} onClick={() => setShowSettings((v) => !v)}>
-          <RiSettings3Line size={19} />
-        </IconButton>
+        <div className="topbar-actions">
+          <label
+            className="capture-toggle"
+            title={settings.captureEnabled ? 'Capture is on' : 'Capture is off'}
+            aria-label={settings.captureEnabled ? 'Turn capture off' : 'Turn capture on'}
+          >
+            <input
+              type="checkbox"
+              checked={settings.captureEnabled}
+              onChange={(event) => saveSettings({ captureEnabled: event.target.checked })}
+            />
+            <span className="capture-toggle-track" aria-hidden="true" />
+          </label>
+          <IconButton label="Settings" active={showSettings} onClick={() => setShowSettings((v) => !v)}>
+            <RiSettings3Line size={19} />
+          </IconButton>
+        </div>
       </header>
 
       {showSettings ? (
         <section className="settings-panel" aria-label="Settings">
           <div className="settings-controls">
-            <label className="setting-row">
-              <span>
-                <strong>Auto capture</strong>
-                <small>Remember text when you copy on a webpage.</small>
-              </span>
-              <input
-                type="checkbox"
-                checked={settings.captureEnabled}
-                onChange={(event) => saveSettings({ captureEnabled: event.target.checked })}
-              />
-            </label>
-
             <label className="setting-row">
               <span>
                 <strong>History limit</strong>
