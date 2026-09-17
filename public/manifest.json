@@ -9,7 +9,7 @@
     "48": "icons/sourceclip-48.png",
     "128": "icons/sourceclip-128.png"
   },
-  "permissions": ["storage", "contextMenus", "clipboardWrite", "scripting"],
+  "permissions": ["storage", "unlimitedStorage", "contextMenus", "clipboardWrite", "scripting"],
   "host_permissions": ["http://*/*", "https://*/*"],
   "background": {
     "service_worker": "background.js"
@@ -30,13 +30,5 @@
       "js": ["content.js"],
       "run_at": "document_idle"
     }
-  ],
-  "commands": {
-    "save-selection": {
-      "suggested_key": {
-        "default": "Ctrl+Shift+S"
-      },
-      "description": "Save the current selection to SourceClip"
-    }
-  }
+  ]
 }

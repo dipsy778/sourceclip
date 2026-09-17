@@ -11,12 +11,16 @@ When automatic capture is enabled and you copy selected text on a normal webpage
 - the page URL and hostname
 - the time the clip was saved
 - whether the clip is pinned
+- the page scroll position and viewport size at the time of the copy
+- a compressed screenshot of the visible browser viewport at the time of the copy
+
+The screenshot can include other content that was visible on the page around the copied text. It is used as a local historical snapshot for the saved clip and is not uploaded anywhere.
 
 Settings such as theme, capture state and history limit are also stored.
 
 ## Where data is stored
 
-All SourceClip data is stored in the browser's extension-local storage (`chrome.storage.local`).
+All SourceClip data, including page snapshots, is stored in the browser's extension-local storage (`chrome.storage.local`).
 
 The project contains no backend, database, analytics SDK, telemetry service, advertising system or account system.
 
@@ -25,14 +29,20 @@ The project contains no backend, database, analytics SDK, telemetry service, adv
 - It does not request clipboard-read permission.
 - It does not continuously inspect the operating system clipboard.
 - It does not intentionally capture password-input selections.
-- It does not send saved clips to a server.
+- It does not send saved clips or screenshots to a server.
 - It does not sell or share clipboard history.
 
 ## Website access
 
-Automatic source-aware capture requires the extension content script to run on regular `http://` and `https://` pages. That access is used to detect copy events and attach the current page title and URL to the selected text.
+Automatic source-aware capture requires the extension content script to run on regular `http://` and `https://` pages. That access is used to detect copy events, attach the current page information to selected text, record the saved scroll position and restore that position later.
 
 Browser-protected pages such as `chrome://` and `edge://` do not allow normal content scripts and are therefore not captured.
+
+## Saved page state
+
+When you use the open-state button on a saved clip, SourceClip opens the original live URL, scrolls back to the saved position and attempts to locate and briefly highlight the copied text.
+
+Websites can change after a clip is saved, so SourceClip cannot guarantee that a dynamic page will be identical later. The locally stored screenshot preserves a visual record of what was visible when the copy happened.
 
 ## Clearing data
 
