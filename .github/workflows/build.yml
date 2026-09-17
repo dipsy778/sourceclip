@@ -32,3 +32,4 @@ jobs:
           test -f dist/icons/sourceclip-32.png
           test -f dist/icons/sourceclip-48.png
           test -f dist/icons/sourceclip-128.png
+          test "$(find dist/assets -type f -name '*.woff2' | wc -l)" -ge 2
