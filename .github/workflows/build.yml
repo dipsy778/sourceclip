@@ -33,3 +33,5 @@ jobs:
           test -f dist/icons/sourceclip-48.png
           test -f dist/icons/sourceclip-128.png
           test "$(find dist/assets -type f -name '*.woff2' | wc -l)" -ge 2
+      - name: Lint Firefox WebExtension package
+        run: npx --yes web-ext@10 lint --source-dir dist

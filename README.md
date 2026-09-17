@@ -6,11 +6,33 @@
 ![Local only](https://img.shields.io/badge/storage-local_only-brightgreen.svg?style=flat)
 ![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)
 
-> Source-aware clipboard history for Windows in Chrome and Edge. Copy text, keep the page it came from.
+> Source-aware clipboard history for Windows. Copy text, keep the page it came from.
 
 <p align="center">
   <img width="144" src="public/icons/sourceclip-128.png" alt="SourceClip logo">
 </p>
+
+## Supported browsers
+
+<p align="center">
+  <img alt="Google Chrome supported" src="https://img.shields.io/badge/Chrome-Supported-4285F4?style=for-the-badge&logo=googlechrome&logoColor=white">
+  <img alt="Microsoft Edge supported" src="https://img.shields.io/badge/Edge-Supported-0078D7?style=for-the-badge&logo=microsoftedge&logoColor=white">
+  <img alt="Brave supported" src="https://img.shields.io/badge/Brave-Supported-FB542B?style=for-the-badge&logo=brave&logoColor=white">
+  <img alt="Firefox supported" src="https://img.shields.io/badge/Firefox-Supported-FF7139?style=for-the-badge&logo=firefoxbrowser&logoColor=white">
+  <img alt="Opera supported" src="https://img.shields.io/badge/Opera-Supported-FF1B2D?style=for-the-badge&logo=opera&logoColor=white">
+</p>
+
+SourceClip supports the major Windows browsers from one Manifest V3 codebase:
+
+| Browser | Windows support |
+| --- | :---: |
+| Google Chrome | ✔ |
+| Microsoft Edge | ✔ |
+| Brave | ✔ |
+| Mozilla Firefox 121+ | ✔ |
+| Opera | ✔ |
+
+Chrome, Edge, Brave and Opera use the Manifest V3 service worker. Firefox uses the Manifest V3 background-script fallback from the same extension package.
 
 ## Why
 
@@ -22,18 +44,18 @@ That's why SourceClip exists.
 
 ## Install
 
-SourceClip is currently distributed as an unpacked Chromium extension for Windows.
+Build SourceClip on Windows:
 
 ```bash
 npm install
 npm run build
 ```
 
-Then load the generated `dist` folder into Chrome or Microsoft Edge.
+The generated `dist` folder contains the extension for all supported browsers.
 
 ## Setup
 
-### Chrome
+### Google Chrome
 
 1. Open `chrome://extensions`
 2. Turn on **Developer mode**
@@ -48,6 +70,34 @@ Then load the generated `dist` folder into Chrome or Microsoft Edge.
 3. Click **Load unpacked**
 4. Select the generated `dist` folder
 5. Pin SourceClip to the toolbar
+
+### Brave
+
+1. Open `brave://extensions`
+2. Turn on **Developer mode**
+3. Click **Load unpacked**
+4. Select the generated `dist` folder
+5. Pin SourceClip to the toolbar
+
+### Opera
+
+1. Open `opera://extensions`
+2. Turn on **Developer mode**
+3. Click **Load unpacked**
+4. Select the generated `dist` folder
+5. Pin SourceClip to the toolbar
+
+### Mozilla Firefox
+
+For local development/testing:
+
+1. Open `about:debugging#/runtime/this-firefox`
+2. Click **Load Temporary Add-on…**
+3. Open the generated `dist` folder
+4. Select `manifest.json`
+5. Pin SourceClip to the toolbar if required
+
+Firefox temporary add-ons are removed when Firefox closes. Permanent Firefox distribution requires the extension to be signed or published through Mozilla Add-ons.
 
 ## Usage
 
@@ -93,6 +143,7 @@ Open the SourceClip popup and click **Copy + source** to copy the saved text wit
 - Light, dark and system themes
 - Local-only storage
 - No account, backend, analytics or telemetry
+- One cross-browser Manifest V3 package for Windows
 
 ## Permissions
 
@@ -105,7 +156,7 @@ Open the SourceClip popup and click **Copy + source** to copy the saved text wit
 | `scripting` | Activates capture on already-open tabs after install or reload |
 | `http://*/*`, `https://*/*` | Detects copy actions, records source-page state and restores saved positions |
 
-Browser-internal pages such as `chrome://`, `edge://` and some built-in PDF viewers are restricted by Chromium, so automatic capture is unavailable there.
+Browser-internal pages such as `chrome://`, `edge://`, `brave://`, `opera://`, `about:` and some built-in PDF viewers are restricted by the browser, so automatic capture is unavailable there.
 
 ## Privacy
 
@@ -117,14 +168,7 @@ A page snapshot may contain other content that was visible in the browser viewpo
 
 ## Platform Support
 
-SourceClip is currently focused on **Windows 10 and Windows 11**.
-
-| Windows Browser | Support |
-| --- | :---: |
-| Google Chrome | ✔ |
-| Microsoft Edge | ✔ |
-
-Other platforms and browsers are not part of the current supported target.
+SourceClip is focused on **Windows 10 and Windows 11** across Chrome, Edge, Brave, Firefox and Opera.
 
 ## Next changes
 
@@ -136,6 +180,7 @@ Other platforms and browsers are not part of the current supported target.
 - Optional favicon capture for saved sources
 - Snapshot preview inside the popup
 - Release ZIP from GitHub Actions
+- Signed browser-store releases
 
 ## Development
 
@@ -150,7 +195,7 @@ Production build:
 npm run build
 ```
 
-Pull requests run a GitHub Actions build check to make sure the extension bundle contains the manifest, service worker, content script, popup, icons and bundled fonts.
+Pull requests run a GitHub Actions build check to make sure the extension bundle contains the manifest, background script/service worker, content script, popup, icons and bundled fonts.
 
 ## License
 
