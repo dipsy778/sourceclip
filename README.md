@@ -7,7 +7,10 @@
 ![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)
 
 > Source-aware clipboard history for Windows in Chrome and Edge. Copy text, keep the page it came from.
-> 
+
+<p align="center">
+  <img width="144" src="public/icons/sourceclip-128.png" alt="SourceClip logo">
+</p>
 
 ## Why
 
