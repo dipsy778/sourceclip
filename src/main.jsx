@@ -7,6 +7,7 @@ import {
   RiFileCopyLine,
   RiLinkM,
   RiMoonLine,
+  RiPencilLine,
   RiPushpinFill,
   RiPushpinLine,
   RiSearch2Line,
@@ -41,6 +42,10 @@ function hostLabel(clip) {
   } catch {
     return 'Local source'
   }
+}
+
+function clipDisplayTitle(clip) {
+  return String(clip.customTitle || clip.text || 'Untitled clip')
 }
 
 async function writeClipboard(text) {
@@ -82,6 +87,8 @@ function App() {
   const [showSettings, setShowSettings] = useState(false)
   const [onlyPinned, setOnlyPinned] = useState(false)
   const [copiedId, setCopiedId] = useState(null)
+  const [editingClipId, setEditingClipId] = useState(null)
+  const [editingTitle, setEditingTitle] = useState('')
 
   useEffect(() => {
     chrome.storage.local.get(['clips', 'settings']).then((stored) => {
@@ -122,7 +129,7 @@ function App() {
       .filter((clip) => !onlyPinned || clip.pinned)
       .filter((clip) => {
         if (!needle) return true
-        return [clip.text, clip.title, clip.hostname, clip.url].some((value) =>
+        return [clip.customTitle, clip.text, clip.title, clip.hostname, clip.url].some((value) =>
           String(value || '').toLowerCase().includes(needle),
         )
       })
@@ -146,6 +153,28 @@ function App() {
     const next = clips.map((clip) => (clip.id === id ? { ...clip, ...patch } : clip))
     setClips(next)
     await chrome.storage.local.set({ clips: next })
+  }
+
+  function beginTitleEdit(clip) {
+    setEditingClipId(clip.id)
+    setEditingTitle(clipDisplayTitle(clip))
+  }
+
+  function cancelTitleEdit() {
+    setEditingClipId(null)
+    setEditingTitle('')
+  }
+
+  async function saveTitleEdit(clip) {
+    const nextTitle = editingTitle.trim()
+    if (!nextTitle) {
+      cancelTitleEdit()
+      return
+    }
+
+    const customTitle = nextTitle === clip.text ? '' : nextTitle
+    await updateClip(clip.id, { customTitle })
+    cancelTitleEdit()
   }
 
   async function deleteClip(id) {
@@ -336,14 +365,59 @@ function App() {
                     <time>{timeAgo(clip.createdAt)}</time>
                   </div>
 
-                  <button
-                    className="clip-text"
-                    type="button"
-                    onClick={() => copyClip(clip)}
-                    title="Copy text"
-                  >
-                    {clip.text}
-                  </button>
+                  <div className="clip-title-row">
+                    {editingClipId === clip.id ? (
+                      <input
+                        className="clip-title-input"
+                        autoFocus
+                        type="text"
+                        value={editingTitle}
+                        maxLength={180}
+                        onChange={(event) => setEditingTitle(event.target.value)}
+                        onBlur={() => saveTitleEdit(clip)}
+                        onKeyDown={(event) => {
+                          if (event.key === 'Enter') event.currentTarget.blur()
+                          if (event.key === 'Escape') {
+                            event.preventDefault()
+                            cancelTitleEdit()
+                          }
+                        }}
+                        aria-label="Edit clip title"
+                      />
+                    ) : (
+                      <button
+                        className="clip-title"
+                        type="button"
+                        onClick={() => copyClip(clip)}
+                        title="Copy original text"
+                      >
+                        {clipDisplayTitle(clip)}
+                      </button>
+                    )}
+
+                    {editingClipId !== clip.id && (
+                      <button
+                        className="edit-title-button"
+                        type="button"
+                        title="Edit clip title"
+                        aria-label="Edit clip title"
+                        onClick={() => beginTitleEdit(clip)}
+                      >
+                        <RiPencilLine size={15} />
+                      </button>
+                    )}
+                  </div>
+
+                  {clip.customTitle && (
+                    <button
+                      className="original-clip-text"
+                      type="button"
+                      onClick={() => copyClip(clip)}
+                      title="Copy original text"
+                    >
+                      {clip.text}
+                    </button>
+                  )}
 
                   <div className="page-title" title={clip.title}>{clip.title}</div>
 
