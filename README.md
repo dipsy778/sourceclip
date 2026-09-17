@@ -191,6 +191,8 @@ npm run build
 
 Pull requests run a GitHub Actions build check to make sure the extension bundle contains the manifest, background script/service worker, content script, popup, icons and bundled fonts.
 
+Contributions and documentation improvements are welcome through pull requests.
+
 ## License
 
 [MIT](LICENSE)
