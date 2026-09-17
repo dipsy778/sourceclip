@@ -25,6 +25,19 @@ function makeId() {
   return `${Date.now()}-${Math.random().toString(36).slice(2)}`
 }
 
+async function captureVisibleSnapshot(tab) {
+  if (!tab?.active || !/^https?:\/\//i.test(tab.url || '')) return ''
+
+  try {
+    return await chrome.tabs.captureVisibleTab(tab.windowId, {
+      format: 'jpeg',
+      quality: 42,
+    })
+  } catch {
+    return ''
+  }
+}
+
 async function saveClip(payload, { force = false } = {}) {
   const text = String(payload?.text || '').trim()
   if (!text) return { saved: false, reason: 'empty' }
@@ -41,7 +54,15 @@ async function saveClip(payload, { force = false } = {}) {
   )
 
   if (duplicateIndex >= 0) {
-    const duplicate = { ...clips[duplicateIndex], createdAt: now }
+    const duplicate = {
+      ...clips[duplicateIndex],
+      createdAt: now,
+      scrollX: Number(payload?.scrollX) || 0,
+      scrollY: Number(payload?.scrollY) || 0,
+      viewportWidth: Number(payload?.viewportWidth) || clips[duplicateIndex].viewportWidth || 0,
+      viewportHeight: Number(payload?.viewportHeight) || clips[duplicateIndex].viewportHeight || 0,
+      snapshot: String(payload?.snapshot || clips[duplicateIndex].snapshot || ''),
+    }
     const next = [duplicate, ...clips.filter((_, index) => index !== duplicateIndex)]
     await chrome.storage.local.set({ clips: next })
     return { saved: true, id: duplicate.id, deduped: true }
@@ -56,12 +77,17 @@ async function saveClip(payload, { force = false } = {}) {
     createdAt: now,
     pinned: false,
     manual: Boolean(payload?.manual),
+    scrollX: Number(payload?.scrollX) || 0,
+    scrollY: Number(payload?.scrollY) || 0,
+    viewportWidth: Number(payload?.viewportWidth) || 0,
+    viewportHeight: Number(payload?.viewportHeight) || 0,
+    snapshot: String(payload?.snapshot || ''),
   }
 
   const next = [clip, ...clips]
   const pinned = next.filter((item) => item.pinned)
   const unpinned = next.filter((item) => !item.pinned)
-  const limited = [...pinned, ...unpinned].slice(0, Math.max(10, settings.maxClips))
+  const limited = [...pinned, ...unpinned].slice(0, Math.max(1, settings.maxClips))
 
   await chrome.storage.local.set({ clips: limited })
   return { saved: true, id: clip.id }
@@ -95,6 +121,57 @@ async function injectIntoOpenTabs() {
   )
 }
 
+function waitForTabLoad(tabId, timeoutMs = 15000) {
+  return new Promise((resolve) => {
+    let finished = false
+
+    const done = () => {
+      if (finished) return
+      finished = true
+      chrome.tabs.onUpdated.removeListener(listener)
+      clearTimeout(timer)
+      resolve()
+    }
+
+    const listener = (updatedTabId, changeInfo) => {
+      if (updatedTabId === tabId && changeInfo.status === 'complete') done()
+    }
+
+    const timer = setTimeout(done, timeoutMs)
+    chrome.tabs.onUpdated.addListener(listener)
+  })
+}
+
+async function restoreClipState(clip) {
+  const url = String(clip?.url || '')
+  if (!/^https?:\/\//i.test(url)) return { opened: false }
+
+  const tab = await chrome.tabs.create({ url })
+  if (!tab.id) return { opened: false }
+
+  await waitForTabLoad(tab.id)
+
+  const state = {
+    text: String(clip?.text || ''),
+    scrollX: Number(clip?.scrollX) || 0,
+    scrollY: Number(clip?.scrollY) || 0,
+  }
+
+  for (let attempt = 0; attempt < 5; attempt += 1) {
+    try {
+      await chrome.tabs.sendMessage(tab.id, {
+        type: 'sourceclip-restore-state',
+        state,
+      })
+      return { opened: true, restored: true, tabId: tab.id }
+    } catch {
+      await new Promise((resolve) => setTimeout(resolve, 400))
+    }
+  }
+
+  return { opened: true, restored: false, tabId: tab.id }
+}
+
 // Developer reloads and service-worker restarts should activate SourceClip
 // on tabs that were already open without requiring a page refresh.
 injectIntoOpenTabs().catch(() => {})
@@ -111,47 +188,53 @@ chrome.runtime.onStartup.addListener(async () => {
   await injectIntoOpenTabs()
 })
 
-chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
-  if (message?.type !== 'sourceclip-save') return false
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message?.type === 'sourceclip-save') {
+    ;(async () => {
+      const snapshot = await captureVisibleSnapshot(sender.tab)
+      return saveClip({
+        ...message.payload,
+        snapshot,
+      })
+    })()
+      .then(sendResponse)
+      .catch((error) => sendResponse({ saved: false, error: error.message }))
+    return true
+  }
 
-  saveClip(message.payload)
-    .then(sendResponse)
-    .catch((error) => sendResponse({ saved: false, error: error.message }))
-  return true
+  if (message?.type === 'sourceclip-open-state') {
+    restoreClipState(message.clip)
+      .then(sendResponse)
+      .catch((error) => sendResponse({ opened: false, error: error.message }))
+    return true
+  }
+
+  return false
 })
 
-chrome.contextMenus.onClicked.addListener((info, tab) => {
+chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   if (info.menuItemId !== 'sourceclip-save-selection' || !info.selectionText) return
 
-  saveClip(
+  let pageState = {}
+  try {
+    if (tab?.id) {
+      pageState = await chrome.tabs.sendMessage(tab.id, { type: 'sourceclip-get-selection' })
+    }
+  } catch {
+    pageState = {}
+  }
+
+  const snapshot = await captureVisibleSnapshot(tab)
+
+  await saveClip(
     {
+      ...pageState,
       text: info.selectionText,
-      title: tab?.title || 'Untitled page',
-      url: tab?.url || '',
+      title: tab?.title || pageState.title || 'Untitled page',
+      url: tab?.url || pageState.url || '',
+      snapshot,
       manual: true,
     },
     { force: true },
   )
-})
-
-chrome.commands.onCommand.addListener(async (command) => {
-  if (command !== 'save-selection') return
-
-  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true })
-  if (!tab?.id) return
-
-  try {
-    const response = await chrome.tabs.sendMessage(tab.id, { type: 'sourceclip-get-selection' })
-    if (!response?.text) return
-
-    await saveClip(
-      {
-        ...response,
-        manual: true,
-      },
-      { force: true },
-    )
-  } catch {
-    // Restricted browser pages do not allow content scripts. Ignore them gracefully.
-  }
 })
