@@ -16,7 +16,7 @@
 
 Copying from the web is easy. Remembering where that useful quote, code snippet, product note or research detail came from is the annoying part.
 
-SourceClip saves copied text with its page title, site and original URL, so you can find the source again later instead of digging through tabs, browser history or screenshots.
+SourceClip saves copied text with its page title, site, original URL and saved page position, so you can return close to the exact place you were when you copied it.
 
 That's why SourceClip exists.
 
@@ -59,7 +59,15 @@ Highlight text on any normal `http://` or `https://` page and press:
 Ctrl + C
 ```
 
-SourceClip stores the copied text with the page title, website and URL automatically.
+SourceClip stores the copied text with the page title, website, URL, scroll position and a compressed snapshot of the visible page.
+
+### Return to the saved page state
+
+Click the external-link icon on a saved clip.
+
+SourceClip opens the original live page, waits for it to load, scrolls back to the saved position and tries to locate and briefly highlight the text you copied.
+
+Websites can change after you save a clip, so dynamic content cannot always be restored perfectly. The local screenshot preserves a visual record of what was visible at the time of the copy.
 
 ### Save a selection manually
 
@@ -69,17 +77,16 @@ Right-click highlighted text and choose **Save selection to SourceClip**.
 
 Open the SourceClip popup and click **Copy + source** to copy the saved text with its original page link attached.
 
-### Find the original page
-
-Search your saved clips by text, page title, website or URL, then click the source link to reopen where the text came from.
-
 ## Features
 
 - Automatic source-aware capture with `Ctrl + C`
+- Local visible-page snapshots
+- Saved scroll position and viewport state
+- Reopen a page at its saved position
+- Attempt to find and highlight the copied text again
 - Search across copied text, page titles, domains and URLs
 - Copy text again with one click
 - Copy text together with a source link
-- Open the original page
 - Pin important clips
 - Delete clips or clear history
 - Adjustable history limit from 1 to 250 clips
@@ -91,21 +98,22 @@ Search your saved clips by text, page title, website or URL, then click the sour
 
 | Permission | Why SourceClip needs it |
 | --- | --- |
-| `storage` | Saves clips and settings locally in the browser |
+| `storage` | Saves clips, settings and page-state data locally in the browser |
+| `unlimitedStorage` | Allows locally stored page snapshots without hitting the normal extension storage quota |
 | `contextMenus` | Adds the right-click save action |
 | `clipboardWrite` | Copies saved text back to your clipboard |
 | `scripting` | Activates capture on already-open tabs after install or reload |
-| `http://*/*`, `https://*/*` | Detects copy actions and records the source page |
+| `http://*/*`, `https://*/*` | Detects copy actions, records source-page state and restores saved positions |
 
 Browser-internal pages such as `chrome://`, `edge://` and some built-in PDF viewers are restricted by Chromium, so automatic capture is unavailable there.
 
 ## Privacy
 
-SourceClip is designed to keep clipboard history on your device.
+SourceClip is designed to keep clipboard history and page snapshots on your device.
 
-It does not request clipboard-read permission, does not continuously inspect your system clipboard, does not send clips to a server and does not include analytics or tracking code.
+It does not request clipboard-read permission, does not continuously inspect your system clipboard, does not send clips or screenshots to a server and does not include analytics or tracking code.
 
-See [PRIVACY.md](PRIVACY.md) for the full privacy notes.
+A page snapshot may contain other content that was visible in the browser viewport around the copied text. See [PRIVACY.md](PRIVACY.md) for the full privacy notes.
 
 ## Platform Support
 
@@ -126,6 +134,7 @@ Other platforms and browsers are not part of the current supported target.
 - Better source formatting templates
 - Keyboard navigation inside the popup
 - Optional favicon capture for saved sources
+- Snapshot preview inside the popup
 - Release ZIP from GitHub Actions
 
 ## Development
