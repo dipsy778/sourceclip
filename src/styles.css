@@ -242,11 +242,11 @@ kbd { border: 1px solid var(--border-strong); border-bottom-width: 2px; border-r
 
 .settings-panel {
   margin: 0 18px 14px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 14px;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
   padding: 0 15px 15px;
-  box-shadow: var(--shadow);
+  box-shadow: none;
   flex: 1;
   overflow-y: auto;
   display: flex;
