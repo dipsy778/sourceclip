@@ -105,15 +105,15 @@ Highlight text on any normal `http://` or `https://` page and press:
 Ctrl + C
 ```
 
-SourceClip stores the copied text with the page title, website, URL, scroll position and a compressed snapshot of the visible page.
+SourceClip stores the copied text with the page title, website, URL and saved page position. It does not capture or store screenshots or page images.
 
 ### Return to the saved page state
 
 Click the external-link icon on a saved clip.
 
-SourceClip opens the original live page, waits for it to load, scrolls back to the saved position and tries to locate and briefly highlight the text you copied.
+SourceClip opens the original live page, waits for it to load, scrolls back to the saved position and tries to locate the copied text again. When it finds the text, the text itself is temporarily highlighted in yellow so you can immediately see where the clip came from.
 
-Websites can change after you save a clip, so dynamic content cannot always be restored perfectly. The local screenshot preserves a visual record of what was visible at the time of the copy.
+Websites can change after you save a clip, so dynamic content cannot always be restored perfectly and the original text may no longer be present.
 
 ### Save a selection manually
 
@@ -126,10 +126,9 @@ Open the SourceClip popup and click **Copy + source** to copy the saved text wit
 ## Features
 
 - Automatic source-aware capture with `Ctrl + C`
-- Local visible-page snapshots
 - Saved scroll position and viewport state
 - Reopen a page at its saved position
-- Attempt to find and highlight the copied text again
+- Temporarily highlight the original copied text in yellow
 - Search across copied text, page titles, domains and URLs
 - Copy text again with one click
 - Copy text together with a source link
@@ -138,6 +137,7 @@ Open the SourceClip popup and click **Copy + source** to copy the saved text wit
 - Adjustable history limit from 1 to 250 clips
 - Light, dark and system themes
 - Local-only storage
+- No screenshot or page-image capture
 - No account, backend, analytics or telemetry
 - One cross-browser Manifest V3 package for Windows
 
@@ -146,7 +146,6 @@ Open the SourceClip popup and click **Copy + source** to copy the saved text wit
 | Permission | Why SourceClip needs it |
 | --- | --- |
 | `storage` | Saves clips, settings and page-state data locally in the browser |
-| `unlimitedStorage` | Allows locally stored page snapshots without hitting the normal extension storage quota |
 | `contextMenus` | Adds the right-click save action |
 | `clipboardWrite` | Copies saved text back to your clipboard |
 | `scripting` | Activates capture on already-open tabs after install or reload |
@@ -156,11 +155,11 @@ Browser-internal pages such as `chrome://`, `edge://`, `brave://`, `opera://`, `
 
 ## Privacy
 
-SourceClip is designed to keep clipboard history and page snapshots on your device.
+SourceClip is designed to keep clipboard history on your device.
 
-It does not request clipboard-read permission, does not continuously inspect your system clipboard, does not send clips or screenshots to a server and does not include analytics or tracking code.
+It does not request clipboard-read permission, does not continuously inspect your system clipboard, does not capture screenshots or page images, does not send clips to a server and does not include analytics or tracking code.
 
-A page snapshot may contain other content that was visible in the browser viewport around the copied text. See [PRIVACY.md](PRIVACY.md) for the full privacy notes.
+See [PRIVACY.md](PRIVACY.md) for the full privacy notes.
 
 ## Platform Support
 
@@ -174,7 +173,6 @@ SourceClip is focused on **Windows 10 and Windows 11** across Chrome, Edge, Brav
 - Better source formatting templates
 - Keyboard navigation inside the popup
 - Optional favicon capture for saved sources
-- Snapshot preview inside the popup
 - Release ZIP from GitHub Actions
 - Signed browser-store releases
 
