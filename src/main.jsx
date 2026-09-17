@@ -205,28 +205,31 @@ function App() {
             <p>{clips.length} saved {clips.length === 1 ? 'clip' : 'clips'}</p>
           </div>
         </div>
-        <div className="topbar-actions">
-          <label
-            className="capture-toggle"
-            title={settings.captureEnabled ? 'Capture is on' : 'Capture is off'}
-            aria-label={settings.captureEnabled ? 'Turn capture off' : 'Turn capture on'}
-          >
-            <input
-              type="checkbox"
-              checked={settings.captureEnabled}
-              onChange={(event) => saveSettings({ captureEnabled: event.target.checked })}
-            />
-            <span className="capture-toggle-track" aria-hidden="true" />
-          </label>
-          <IconButton label="Settings" active={showSettings} onClick={() => setShowSettings((v) => !v)}>
-            <RiSettings3Line size={19} />
-          </IconButton>
-        </div>
+        <IconButton label="Settings" active={showSettings} onClick={() => setShowSettings((v) => !v)}>
+          <RiSettings3Line size={19} />
+        </IconButton>
       </header>
 
       {showSettings ? (
         <section className="settings-panel" aria-label="Settings">
           <div className="settings-controls">
+            <label className="setting-row">
+              <span>
+                <strong>{settings.captureEnabled ? 'SourceClip enabled' : 'SourceClip disabled'}</strong>
+                <small>
+                  {settings.captureEnabled
+                    ? 'Copied text is being remembered automatically.'
+                    : 'Copied text will not be saved until SourceClip is enabled.'}
+                </small>
+              </span>
+              <input
+                type="checkbox"
+                checked={settings.captureEnabled}
+                onChange={(event) => saveSettings({ captureEnabled: event.target.checked })}
+                aria-label={settings.captureEnabled ? 'Disable SourceClip' : 'Enable SourceClip'}
+              />
+            </label>
+
             <label className="setting-row">
               <span>
                 <strong>History limit</strong>
@@ -374,13 +377,21 @@ function App() {
               ))
             ) : (
               <div className="empty-state">
-                <h2>{clips.length ? 'No matching clips' : 'Copy something to begin'}</h2>
+                <h2>
+                  {clips.length
+                    ? 'No matching clips'
+                    : settings.captureEnabled
+                      ? 'Copy something to begin'
+                      : 'Turn on SourceClip in Settings!'}
+                </h2>
                 <p>
                   {clips.length
                     ? 'Try a different search or show all clips.'
-                    : 'SourceClip will remember the text, page and link automatically.'}
+                    : settings.captureEnabled
+                      ? 'SourceClip will remember the text, page and link automatically.'
+                      : 'Open Settings and enable SourceClip before copying text.'}
                 </p>
-                {!clips.length && <kbd>Ctrl + C</kbd>}
+                {!clips.length && settings.captureEnabled && <kbd>Ctrl + C</kbd>}
               </div>
             )}
           </section>
