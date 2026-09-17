@@ -11,7 +11,6 @@ import {
   RiPushpinLine,
   RiSearch2Line,
   RiSettings3Line,
-  RiShieldCheckLine,
   RiSunLine,
 } from '@remixicon/react'
 import './styles.css'
@@ -78,6 +77,7 @@ function IconButton({ label, active = false, danger = false, onClick, children }
 function App() {
   const [clips, setClips] = useState([])
   const [settings, setSettings] = useState(DEFAULT_SETTINGS)
+  const [historyLimitInput, setHistoryLimitInput] = useState(String(DEFAULT_SETTINGS.maxClips))
   const [query, setQuery] = useState('')
   const [showSettings, setShowSettings] = useState(false)
   const [onlyPinned, setOnlyPinned] = useState(false)
@@ -85,15 +85,19 @@ function App() {
 
   useEffect(() => {
     chrome.storage.local.get(['clips', 'settings']).then((stored) => {
+      const nextSettings = { ...DEFAULT_SETTINGS, ...(stored.settings || {}) }
       setClips(Array.isArray(stored.clips) ? stored.clips : [])
-      setSettings({ ...DEFAULT_SETTINGS, ...(stored.settings || {}) })
+      setSettings(nextSettings)
+      setHistoryLimitInput(String(nextSettings.maxClips))
     })
 
     const onChange = (changes, areaName) => {
       if (areaName !== 'local') return
       if (changes.clips) setClips(changes.clips.newValue || [])
       if (changes.settings) {
-        setSettings({ ...DEFAULT_SETTINGS, ...(changes.settings.newValue || {}) })
+        const nextSettings = { ...DEFAULT_SETTINGS, ...(changes.settings.newValue || {}) }
+        setSettings(nextSettings)
+        setHistoryLimitInput(String(nextSettings.maxClips))
       }
     }
 
@@ -129,6 +133,13 @@ function App() {
     const next = { ...settings, ...patch }
     setSettings(next)
     await chrome.storage.local.set({ settings: next })
+  }
+
+  function commitHistoryLimit() {
+    const parsed = Number.parseInt(historyLimitInput, 10)
+    const next = Math.min(250, Math.max(1, Number.isFinite(parsed) ? parsed : settings.maxClips))
+    setHistoryLimitInput(String(next))
+    saveSettings({ maxClips: next })
   }
 
   async function updateClip(id, patch) {
@@ -184,63 +195,85 @@ function App() {
 
       {showSettings ? (
         <section className="settings-panel" aria-label="Settings">
-          <div className="settings-heading">
-            <div>
-              <h2>Settings</h2>
-              <p>Your clips never leave this browser.</p>
+          <div className="settings-controls">
+            <label className="setting-row">
+              <span>
+                <strong>Auto capture</strong>
+                <small>Remember text when you copy on a webpage.</small>
+              </span>
+              <input
+                type="checkbox"
+                checked={settings.captureEnabled}
+                onChange={(event) => saveSettings({ captureEnabled: event.target.checked })}
+              />
+            </label>
+
+            <label className="setting-row">
+              <span>
+                <strong>History limit</strong>
+                <small>Choose any number from 1 to 250. Old unpinned clips are removed first.</small>
+              </span>
+              <input
+                className="number-input"
+                type="number"
+                min="1"
+                max="250"
+                step="1"
+                inputMode="numeric"
+                value={historyLimitInput}
+                onChange={(event) => setHistoryLimitInput(event.target.value)}
+                onBlur={commitHistoryLimit}
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter') event.currentTarget.blur()
+                }}
+                aria-label="History limit"
+              />
+            </label>
+
+            <div className="setting-row theme-row">
+              <span>
+                <strong>Appearance</strong>
+                <small>Match your system or choose a theme.</small>
+              </span>
+              <button
+                className="theme-button"
+                type="button"
+                onClick={() => {
+                  const next = settings.theme === 'system' ? 'light' : settings.theme === 'light' ? 'dark' : 'system'
+                  saveSettings({ theme: next })
+                }}
+              >
+                <ThemeIcon size={16} />
+                {settings.theme}
+              </button>
             </div>
-            <RiShieldCheckLine size={22} />
-          </div>
 
-          <label className="setting-row">
-            <span>
-              <strong>Auto capture</strong>
-              <small>Remember text when you copy on a webpage.</small>
-            </span>
-            <input
-              type="checkbox"
-              checked={settings.captureEnabled}
-              onChange={(event) => saveSettings({ captureEnabled: event.target.checked })}
-            />
-          </label>
-
-          <label className="setting-row select-row">
-            <span>
-              <strong>History limit</strong>
-              <small>Old unpinned clips are removed first.</small>
-            </span>
-            <select
-              value={settings.maxClips}
-              onChange={(event) => saveSettings({ maxClips: Number(event.target.value) })}
-            >
-              {[25, 50, 100, 250].map((amount) => (
-                <option key={amount} value={amount}>{amount}</option>
-              ))}
-            </select>
-          </label>
-
-          <div className="setting-row theme-row">
-            <span>
-              <strong>Appearance</strong>
-              <small>Match your system or choose a theme.</small>
-            </span>
-            <button
-              className="theme-button"
-              type="button"
-              onClick={() => {
-                const next = settings.theme === 'system' ? 'light' : settings.theme === 'light' ? 'dark' : 'system'
-                saveSettings({ theme: next })
-              }}
-            >
-              <ThemeIcon size={16} />
-              {settings.theme}
+            <button className="clear-button" type="button" onClick={clearAll} disabled={!clips.length}>
+              <RiDeleteBin6Line size={17} />
+              Clear history
             </button>
           </div>
 
-          <button className="clear-button" type="button" onClick={clearAll} disabled={!clips.length}>
-            <RiDeleteBin6Line size={17} />
-            Clear history
-          </button>
+          <div className="settings-support">
+            <button
+              className="coffee-button"
+              type="button"
+              onClick={() => openSource('https://buymeacoffee.com/7dipsy')}
+            >
+              <span aria-hidden="true">☕</span>
+              Buy me a coffee!
+            </button>
+            <p className="created-by">
+              Created by{' '}
+              <button
+                className="created-link"
+                type="button"
+                onClick={() => openSource('https://github.com/dipsy778/sourceclip')}
+              >
+                dipsy778
+              </button>
+            </p>
+          </div>
         </section>
       ) : (
         <>
