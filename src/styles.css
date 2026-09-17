@@ -178,24 +178,75 @@ button { color: inherit; }
 .empty-state p { margin: 6px 0 14px; font-size: 11.5px; line-height: 1.5; color: var(--muted); }
 kbd { border: 1px solid var(--border-strong); border-bottom-width: 2px; border-radius: 6px; background: var(--surface); padding: 4px 7px; font-size: 10px; color: var(--muted); }
 
-.settings-panel { margin: 0 18px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 15px; box-shadow: var(--shadow); flex: 1; overflow-y: auto; }
-.settings-heading { display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 14px; border-bottom: 1px solid var(--border); }
-.settings-heading h2 { margin: 0; font-size: 14px; font-weight: 600; }
-.settings-heading p { margin: 4px 0 0; color: var(--muted); font-size: 11px; }
-.settings-heading > svg { color: #5a9c6d; }
+.settings-panel {
+  margin: 0 18px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 0 15px 15px;
+  box-shadow: var(--shadow);
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+.settings-controls { flex: 0 0 auto; }
 .setting-row { min-height: 67px; display: flex; align-items: center; justify-content: space-between; gap: 15px; border-bottom: 1px solid var(--border); }
 .setting-row span { display: flex; flex-direction: column; gap: 3px; }
 .setting-row strong { font-size: 12px; font-weight: 600; }
-.setting-row small { color: var(--muted); font-size: 10.5px; line-height: 1.35; }
+.setting-row small { max-width: 255px; color: var(--muted); font-size: 10.5px; line-height: 1.35; }
 .setting-row input[type='checkbox'] { appearance: none; width: 34px; height: 20px; border-radius: 99px; background: var(--border-strong); position: relative; cursor: pointer; transition: 150ms; flex: 0 0 auto; }
 .setting-row input[type='checkbox']::after { content: ''; position: absolute; width: 16px; height: 16px; top: 2px; left: 2px; border-radius: 50%; background: #fff; transition: 150ms; box-shadow: 0 1px 3px rgba(0,0,0,.18); }
 .setting-row input[type='checkbox']:checked { background: #4f8f63; }
 .setting-row input[type='checkbox']:checked::after { transform: translateX(14px); }
-.setting-row select { border: 1px solid var(--border); border-radius: 8px; background: var(--surface-soft); color: var(--text); height: 31px; padding: 0 7px; font-size: 11px; outline: none; }
+.number-input {
+  width: 74px;
+  height: 32px;
+  flex: 0 0 auto;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-soft);
+  color: var(--text);
+  padding: 0 9px;
+  font-size: 11px;
+  outline: none;
+}
+.number-input:focus { border-color: var(--border-strong); box-shadow: 0 0 0 3px color-mix(in srgb, var(--text) 6%, transparent); }
 .theme-button { border: 1px solid var(--border); border-radius: 8px; background: var(--surface-soft); color: var(--text); height: 31px; padding: 0 9px; display: inline-flex; align-items: center; gap: 6px; text-transform: capitalize; font-size: 11px; cursor: pointer; }
 .clear-button { margin-top: 15px; width: 100%; height: 36px; border-radius: 9px; border: 1px solid var(--border); background: transparent; color: var(--danger); display: flex; align-items: center; justify-content: center; gap: 7px; font-size: 11px; cursor: pointer; }
 .clear-button:hover { background: color-mix(in srgb, var(--danger) 7%, transparent); }
 .clear-button:disabled { opacity: .4; cursor: default; }
+
+.settings-support {
+  margin-top: auto;
+  padding-top: 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 11px;
+}
+.coffee-button {
+  width: 100%;
+  min-height: 39px;
+  border: 1px solid #e4c300;
+  border-radius: 10px;
+  background: #ffdd00;
+  color: #000;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .08);
+  transition: transform 120ms ease, filter 120ms ease;
+}
+.coffee-button:hover { filter: brightness(.97); }
+.coffee-button:active { transform: translateY(1px); }
+.created-by { margin: 0; text-align: center; color: var(--muted); font-size: 10.5px; }
+.created-link { border: 0; background: transparent; padding: 0; color: #3b82f6; font: inherit; font-weight: 600; cursor: pointer; }
+.created-link:hover { text-decoration: underline; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; scroll-behavior: auto !important; }
