@@ -1,5 +1,21 @@
+@font-face {
+  font-family: 'Geist';
+  src: url('./assets/fonts/Geist-Regular.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Geist';
+  src: url('./assets/fonts/Geist-SemiBold.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+}
+
 :root {
-  font-family: 'Geist Variable', 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   color: #111214;
   background: #f7f7f5;
   font-synthesis: none;
@@ -59,16 +75,14 @@ button { color: inherit; }
 }
 
 .brand { display: flex; align-items: center; gap: 11px; }
-.brand-mark {
+.brand-logo {
   width: 34px;
   height: 34px;
-  border-radius: 10px;
-  background: var(--accent);
-  color: var(--accent-text);
-  display: grid;
-  place-items: center;
+  display: block;
+  object-fit: contain;
+  flex: 0 0 auto;
 }
-.brand h1 { margin: 0; font-size: 15px; letter-spacing: -0.02em; font-weight: 670; }
+.brand h1 { margin: 0; font-size: 15px; letter-spacing: -0.02em; font-weight: 600; }
 .brand p { margin: 2px 0 0; color: var(--muted); font-size: 11px; }
 
 .icon-button {
@@ -160,19 +174,18 @@ button { color: inherit; }
 .clip-actions .icon-button { width: 30px; height: 30px; }
 
 .empty-state { min-height: 390px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 30px 55px; }
-.empty-icon { width: 48px; height: 48px; display: grid; place-items: center; border: 1px solid var(--border); border-radius: 14px; background: var(--surface); color: var(--muted); box-shadow: var(--shadow); margin-bottom: 14px; }
-.empty-state h2 { margin: 0; font-size: 14px; font-weight: 650; letter-spacing: -0.02em; }
+.empty-state h2 { margin: 0; font-size: 14px; font-weight: 600; letter-spacing: -0.02em; }
 .empty-state p { margin: 6px 0 14px; font-size: 11.5px; line-height: 1.5; color: var(--muted); }
 kbd { border: 1px solid var(--border-strong); border-bottom-width: 2px; border-radius: 6px; background: var(--surface); padding: 4px 7px; font-size: 10px; color: var(--muted); }
 
 .settings-panel { margin: 0 18px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 15px; box-shadow: var(--shadow); flex: 1; overflow-y: auto; }
 .settings-heading { display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 14px; border-bottom: 1px solid var(--border); }
-.settings-heading h2 { margin: 0; font-size: 14px; }
+.settings-heading h2 { margin: 0; font-size: 14px; font-weight: 600; }
 .settings-heading p { margin: 4px 0 0; color: var(--muted); font-size: 11px; }
 .settings-heading > svg { color: #5a9c6d; }
 .setting-row { min-height: 67px; display: flex; align-items: center; justify-content: space-between; gap: 15px; border-bottom: 1px solid var(--border); }
 .setting-row span { display: flex; flex-direction: column; gap: 3px; }
-.setting-row strong { font-size: 12px; font-weight: 590; }
+.setting-row strong { font-size: 12px; font-weight: 600; }
 .setting-row small { color: var(--muted); font-size: 10.5px; line-height: 1.35; }
 .setting-row input[type='checkbox'] { appearance: none; width: 34px; height: 20px; border-radius: 99px; background: var(--border-strong); position: relative; cursor: pointer; transition: 150ms; flex: 0 0 auto; }
 .setting-row input[type='checkbox']::after { content: ''; position: absolute; width: 16px; height: 16px; top: 2px; left: 2px; border-radius: 50%; background: #fff; transition: 150ms; box-shadow: 0 1px 3px rgba(0,0,0,.18); }
@@ -183,21 +196,6 @@ kbd { border: 1px solid var(--border-strong); border-bottom-width: 2px; border-r
 .clear-button { margin-top: 15px; width: 100%; height: 36px; border-radius: 9px; border: 1px solid var(--border); background: transparent; color: var(--danger); display: flex; align-items: center; justify-content: center; gap: 7px; font-size: 11px; cursor: pointer; }
 .clear-button:hover { background: color-mix(in srgb, var(--danger) 7%, transparent); }
 .clear-button:disabled { opacity: .4; cursor: default; }
-
-footer {
-  width: 100%;
-  height: 35px;
-  border-top: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--faint);
-  font-size: 10px;
-  text-align: center;
-  flex: 0 0 auto;
-  background: var(--bg);
-}
-.footer-separator { margin: 0 6px; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; scroll-behavior: auto !important; }
