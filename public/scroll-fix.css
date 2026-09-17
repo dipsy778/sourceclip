@@ -1,0 +1,33 @@
+html,
+body,
+#root {
+  width: 410px;
+  height: 600px;
+  min-width: 410px;
+  min-height: 0;
+  max-height: 600px;
+  margin: 0;
+  overflow: hidden;
+}
+
+body {
+  overscroll-behavior: none;
+}
+
+.app-shell {
+  width: 410px;
+  height: 600px;
+  min-height: 0;
+  max-height: 600px;
+  overflow: hidden;
+}
+
+.clip-list,
+.settings-panel {
+  min-height: 0;
+}
+
+.clip-list {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
