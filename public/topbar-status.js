@@ -18,10 +18,11 @@ function ensureStatusElement() {
 
   let status = actions.querySelector('.sourceclip-status')
   if (!status) {
-    status = document.createElement('span')
+    status = document.createElement('button')
+    status.type = 'button'
     status.className = 'sourceclip-status'
     status.setAttribute('aria-live', 'polite')
-    status.setAttribute('aria-label', 'SourceClip status')
+    status.addEventListener('click', toggleCapture)
     actions.prepend(status)
   }
 
@@ -33,13 +34,27 @@ function renderStatus(enabled) {
   if (!status) return false
   status.textContent = enabled ? 'On' : 'Off'
   status.dataset.enabled = String(enabled)
+  status.setAttribute('aria-label', enabled ? 'Turn SourceClip off' : 'Turn SourceClip on')
+  status.setAttribute('aria-pressed', String(enabled))
   return true
 }
 
-async function syncStatus() {
+async function getCaptureEnabled() {
   const stored = await chrome.storage.local.get('settings')
-  const enabled = stored.settings?.captureEnabled ?? DEFAULT_CAPTURE_ENABLED
-  renderStatus(Boolean(enabled))
+  return stored.settings?.captureEnabled ?? DEFAULT_CAPTURE_ENABLED
+}
+
+async function syncStatus() {
+  renderStatus(Boolean(await getCaptureEnabled()))
+}
+
+async function toggleCapture() {
+  const stored = await chrome.storage.local.get('settings')
+  const settings = stored.settings || {}
+  const enabled = settings.captureEnabled ?? DEFAULT_CAPTURE_ENABLED
+  const nextSettings = { ...settings, captureEnabled: !enabled }
+  await chrome.storage.local.set({ settings: nextSettings })
+  renderStatus(!enabled)
 }
 
 const observer = new MutationObserver(() => {
