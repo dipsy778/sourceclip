@@ -1,6 +1,9 @@
 if (!globalThis.__sourceClipContentLoaded) {
   globalThis.__sourceClipContentLoaded = true
 
+  let lastCaptureText = ''
+  let lastCaptureAt = 0
+
   function getSelectedText() {
     const active = document.activeElement
 
@@ -39,6 +42,11 @@ if (!globalThis.__sourceClipContentLoaded) {
   function captureSelection() {
     const text = getSelectedText().trim()
     if (!text) return
+
+    const now = Date.now()
+    if (text === lastCaptureText && now - lastCaptureAt < 350) return
+    lastCaptureText = text
+    lastCaptureAt = now
 
     try {
       chrome.runtime.sendMessage({
@@ -109,7 +117,7 @@ if (!globalThis.__sourceClipContentLoaded) {
     }, 250)
   }
 
-  // The copy event is the canonical path for normal browser copying.
+  // The copy event is the canonical path for normal Windows copying.
   document.addEventListener('copy', captureSelection, true)
 
   // Some sites intercept copy events. Capture Ctrl+C as a fallback too.
