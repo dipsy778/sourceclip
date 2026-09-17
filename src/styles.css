@@ -198,6 +198,7 @@ kbd { border: 1px solid var(--border-strong); border-bottom-width: 2px; border-r
 .settings-controls { flex: 0 0 auto; }
 .setting-row { min-height: 67px; display: flex; align-items: center; justify-content: space-between; gap: 15px; border-bottom: 1px solid var(--border); }
 .setting-row span { display: flex; flex-direction: column; gap: 3px; }
+.settings-controls .setting-row:first-child > span { width: 255px; flex: 0 0 255px; }
 .setting-row strong { font-size: 12px; font-weight: 600; }
 .setting-row small { max-width: 255px; color: var(--muted); font-size: 10.5px; line-height: 1.35; }
 .setting-row input[type='checkbox'] { appearance: none; width: 34px; height: 20px; border-radius: 99px; background: var(--border-strong); position: relative; cursor: pointer; transition: 150ms; flex: 0 0 auto; }
