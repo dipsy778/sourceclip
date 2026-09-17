@@ -362,7 +362,7 @@ function App() {
                     ? 'Try a different search or show all clips.'
                     : 'SourceClip will remember the text, page and link automatically.'}
                 </p>
-                {!clips.length && <kbd>Ctrl + Shift + S</kbd>}
+                {!clips.length && <kbd>Ctrl + C</kbd>}
               </div>
             )}
           </section>
