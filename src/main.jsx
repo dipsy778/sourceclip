@@ -1,8 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { createRoot } from 'react-dom/client'
-import '@fontsource-variable/geist'
 import {
-  RiClipboardLine,
   RiComputerLine,
   RiDeleteBin6Line,
   RiExternalLinkLine,
@@ -173,9 +171,7 @@ function App() {
     <main className="app-shell">
       <header className="topbar">
         <div className="brand">
-          <div className="brand-mark" aria-hidden="true">
-            <RiClipboardLine size={19} />
-          </div>
+          <img className="brand-logo" src="/icons/sourceclip-48.png" alt="" aria-hidden="true" />
           <div>
             <h1>SourceClip</h1>
             <p>{clips.length} saved {clips.length === 1 ? 'clip' : 'clips'}</p>
@@ -327,7 +323,6 @@ function App() {
               ))
             ) : (
               <div className="empty-state">
-                <div className="empty-icon"><RiClipboardLine size={24} /></div>
                 <h2>{clips.length ? 'No matching clips' : 'Copy something to begin'}</h2>
                 <p>
                   {clips.length
@@ -340,12 +335,6 @@ function App() {
           </section>
         </>
       )}
-
-      <footer>
-        <span>{settings.captureEnabled ? 'Auto capture is on' : 'Auto capture is off'}</span>
-        <span className="footer-separator">·</span>
-        <span>Local only</span>
-      </footer>
     </main>
   )
 }
