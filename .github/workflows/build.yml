@@ -28,3 +28,7 @@ jobs:
           test -f dist/background.js
           test -f dist/content.js
           test -f dist/index.html
+          test -f dist/icons/sourceclip-16.png
+          test -f dist/icons/sourceclip-32.png
+          test -f dist/icons/sourceclip-48.png
+          test -f dist/icons/sourceclip-128.png

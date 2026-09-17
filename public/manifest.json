@@ -2,7 +2,13 @@
   "manifest_version": 3,
   "name": "SourceClip",
   "description": "A privacy-first clipboard tool that remembers where copied text came from.",
-  "version": "0.1.1",
+  "version": "0.1.2",
+  "icons": {
+    "16": "icons/sourceclip-16.png",
+    "32": "icons/sourceclip-32.png",
+    "48": "icons/sourceclip-48.png",
+    "128": "icons/sourceclip-128.png"
+  },
   "permissions": ["storage", "contextMenus", "clipboardWrite", "scripting"],
   "host_permissions": ["http://*/*", "https://*/*"],
   "background": {
@@ -10,7 +16,13 @@
   },
   "action": {
     "default_title": "SourceClip",
-    "default_popup": "index.html"
+    "default_popup": "index.html",
+    "default_icon": {
+      "16": "icons/sourceclip-16.png",
+      "32": "icons/sourceclip-32.png",
+      "48": "icons/sourceclip-48.png",
+      "128": "icons/sourceclip-128.png"
+    }
   },
   "content_scripts": [
     {
