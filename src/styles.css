@@ -151,9 +151,8 @@ button { color: inherit; }
 
 .clip-meta { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
 .clip-meta time { color: var(--faint); font-size: 10.5px; white-space: nowrap; }
-.source-name { max-width: 250px; display: inline-flex; align-items: center; gap: 6px; border: 0; padding: 0; background: none; color: var(--muted); font-size: 10.5px; cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.source-name { max-width: 250px; display: inline-flex; align-items: center; border: 0; padding: 0; background: none; color: var(--muted); font-size: 10.5px; cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .source-name:disabled { cursor: default; }
-.source-dot { width: 6px; height: 6px; border-radius: 99px; background: #5a9c6d; flex: 0 0 auto; }
 
 .clip-text {
   width: 100%;
