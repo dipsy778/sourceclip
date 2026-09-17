@@ -168,6 +168,23 @@ function App() {
     if (url) chrome.tabs.create({ url })
   }
 
+  async function openSavedState(clip) {
+    if (!clip?.url) return
+    try {
+      await chrome.runtime.sendMessage({
+        type: 'sourceclip-open-state',
+        clip: {
+          text: clip.text,
+          url: clip.url,
+          scrollX: clip.scrollX,
+          scrollY: clip.scrollY,
+        },
+      })
+    } catch {
+      chrome.tabs.create({ url: clip.url })
+    }
+  }
+
   async function clearAll() {
     if (!clips.length) return
     if (!window.confirm('Clear all saved clips? This cannot be undone.')) return
@@ -309,7 +326,6 @@ function App() {
                       disabled={!clip.url}
                       title={clip.url || undefined}
                     >
-                      <span className="source-dot" />
                       {hostLabel(clip)}
                     </button>
                     <time>{timeAgo(clip.createdAt)}</time>
@@ -337,7 +353,7 @@ function App() {
                     </button>
                     <div className="action-spacer" />
                     {clip.url && (
-                      <IconButton label="Open source" onClick={() => openSource(clip.url)}>
+                      <IconButton label="Open saved page state" onClick={() => openSavedState(clip)}>
                         <RiExternalLinkLine size={17} />
                       </IconButton>
                     )}
