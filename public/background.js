@@ -95,6 +95,10 @@ async function injectIntoOpenTabs() {
   )
 }
 
+// Developer reloads and service-worker restarts should activate SourceClip
+// on tabs that were already open without requiring a page refresh.
+injectIntoOpenTabs().catch(() => {})
+
 chrome.runtime.onInstalled.addListener(async () => {
   await ensureDefaults()
   createMenus()
