@@ -25,19 +25,6 @@ function makeId() {
   return `${Date.now()}-${Math.random().toString(36).slice(2)}`
 }
 
-async function captureVisibleSnapshot(tab) {
-  if (!tab?.active || !/^https?:\/\//i.test(tab.url || '')) return ''
-
-  try {
-    return await chrome.tabs.captureVisibleTab(tab.windowId, {
-      format: 'jpeg',
-      quality: 42,
-    })
-  } catch {
-    return ''
-  }
-}
-
 async function saveClip(payload, { force = false } = {}) {
   const text = String(payload?.text || '').trim()
   if (!text) return { saved: false, reason: 'empty' }
@@ -61,8 +48,9 @@ async function saveClip(payload, { force = false } = {}) {
       scrollY: Number(payload?.scrollY) || 0,
       viewportWidth: Number(payload?.viewportWidth) || clips[duplicateIndex].viewportWidth || 0,
       viewportHeight: Number(payload?.viewportHeight) || clips[duplicateIndex].viewportHeight || 0,
-      snapshot: String(payload?.snapshot || clips[duplicateIndex].snapshot || ''),
     }
+    delete duplicate.snapshot
+
     const next = [duplicate, ...clips.filter((_, index) => index !== duplicateIndex)]
     await chrome.storage.local.set({ clips: next })
     return { saved: true, id: duplicate.id, deduped: true }
@@ -81,7 +69,6 @@ async function saveClip(payload, { force = false } = {}) {
     scrollY: Number(payload?.scrollY) || 0,
     viewportWidth: Number(payload?.viewportWidth) || 0,
     viewportHeight: Number(payload?.viewportHeight) || 0,
-    snapshot: String(payload?.snapshot || ''),
   }
 
   const next = [clip, ...clips]
@@ -95,7 +82,13 @@ async function saveClip(payload, { force = false } = {}) {
 
 async function ensureDefaults() {
   const { clips, settings } = await getState()
-  await chrome.storage.local.set({ clips, settings })
+  const cleanedClips = clips.map((clip) => {
+    if (!Object.prototype.hasOwnProperty.call(clip, 'snapshot')) return clip
+    const cleaned = { ...clip }
+    delete cleaned.snapshot
+    return cleaned
+  })
+  await chrome.storage.local.set({ clips: cleanedClips, settings })
 }
 
 function createMenus() {
@@ -172,8 +165,6 @@ async function restoreClipState(clip) {
   return { opened: true, restored: false, tabId: tab.id }
 }
 
-// Developer reloads and service-worker restarts should activate SourceClip
-// on tabs that were already open without requiring a page refresh.
 injectIntoOpenTabs().catch(() => {})
 
 chrome.runtime.onInstalled.addListener(async () => {
@@ -188,15 +179,9 @@ chrome.runtime.onStartup.addListener(async () => {
   await injectIntoOpenTabs()
 })
 
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   if (message?.type === 'sourceclip-save') {
-    ;(async () => {
-      const snapshot = await captureVisibleSnapshot(sender.tab)
-      return saveClip({
-        ...message.payload,
-        snapshot,
-      })
-    })()
+    saveClip(message.payload)
       .then(sendResponse)
       .catch((error) => sendResponse({ saved: false, error: error.message }))
     return true
@@ -224,15 +209,12 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     pageState = {}
   }
 
-  const snapshot = await captureVisibleSnapshot(tab)
-
   await saveClip(
     {
       ...pageState,
       text: info.selectionText,
       title: tab?.title || pageState.title || 'Untitled page',
       url: tab?.url || pageState.url || '',
-      snapshot,
       manual: true,
     },
     { force: true },
