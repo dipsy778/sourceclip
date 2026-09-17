@@ -20,13 +20,13 @@
 
 SourceClip supports the major Windows browsers from one Manifest V3 codebase:
 
-| Browser | Windows support |
-| --- | :---: |
-| Google Chrome | ✔ |
-| Microsoft Edge | ✔ |
-| Brave | ✔ |
-| Mozilla Firefox 121+ | ✔ |
-| Opera | ✔ |
+| Browser | Windows support | Mac support |
+| --- | :---: | :---: |
+| Google Chrome | Yes | No |
+| Microsoft Edge | Yes | No |
+| Brave | Yes | No |
+| Mozilla Firefox 121+ | Yes | No |
+| Opera | Yes | No |
 
 Chrome, Edge, Brave and Opera use the Manifest V3 service worker. Firefox uses the Manifest V3 background-script fallback from the same extension package.
 
