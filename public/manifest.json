@@ -9,7 +9,7 @@
     "48": "icons/sourceclip-48.png",
     "128": "icons/sourceclip-128.png"
   },
-  "permissions": ["storage", "unlimitedStorage", "contextMenus", "clipboardWrite", "scripting"],
+  "permissions": ["storage", "contextMenus", "clipboardWrite", "scripting"],
   "host_permissions": ["http://*/*", "https://*/*"],
   "background": {
     "scripts": ["background.js"],

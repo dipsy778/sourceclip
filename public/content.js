@@ -3,6 +3,8 @@ if (!globalThis.__sourceClipContentLoaded) {
 
   let lastCaptureText = ''
   let lastCaptureAt = 0
+  let restoreStyle = null
+  let restoreTimer = null
 
   function getSelectedText() {
     const active = document.activeElement
@@ -58,49 +60,96 @@ if (!globalThis.__sourceClipContentLoaded) {
     }
   }
 
-  function findTextNode(root, needle) {
-    const normalizedNeedle = needle.replace(/\s+/g, ' ').trim()
-    if (!normalizedNeedle) return null
+  function buildNormalizedTextMap(root) {
+    const nodes = []
+    const normalized = []
+    let previousWasSpace = false
 
     const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
       acceptNode(node) {
         const parent = node.parentElement
-        if (!parent || ['SCRIPT', 'STYLE', 'NOSCRIPT'].includes(parent.tagName)) {
+        if (!parent || ['SCRIPT', 'STYLE', 'NOSCRIPT', 'TEXTAREA'].includes(parent.tagName)) {
           return NodeFilter.FILTER_REJECT
         }
-        return node.textContent?.trim() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP
+        return node.textContent ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP
       },
     })
 
     while (walker.nextNode()) {
       const node = walker.currentNode
-      const normalized = node.textContent.replace(/\s+/g, ' ')
-      if (normalized.includes(normalizedNeedle)) return node
+      const text = node.textContent || ''
+
+      for (let offset = 0; offset < text.length; offset += 1) {
+        const char = text[offset]
+        const isSpace = /\s/.test(char)
+
+        if (isSpace) {
+          if (previousWasSpace || normalized.length === 0) continue
+          normalized.push(' ')
+          nodes.push({ node, offset })
+          previousWasSpace = true
+          continue
+        }
+
+        normalized.push(char)
+        nodes.push({ node, offset })
+        previousWasSpace = false
+      }
     }
 
-    return null
+    return { text: normalized.join('').trimEnd(), map: nodes }
+  }
+
+  function ensureRestoreSelectionStyle() {
+    if (restoreStyle?.isConnected) return
+    restoreStyle = document.createElement('style')
+    restoreStyle.dataset.sourceclipRestoreStyle = 'true'
+    restoreStyle.textContent = `
+      html[data-sourceclip-restoring='true'] ::selection {
+        background: #ffeb3b !important;
+        color: #111 !important;
+      }
+    `
+    document.documentElement.appendChild(restoreStyle)
+  }
+
+  function clearRestoreHighlight() {
+    if (restoreTimer) {
+      clearTimeout(restoreTimer)
+      restoreTimer = null
+    }
+
+    document.documentElement.removeAttribute('data-sourceclip-restoring')
+    window.getSelection()?.removeAllRanges()
   }
 
   function highlightRestoredText(text) {
-    const probe = text.replace(/\s+/g, ' ').trim().slice(0, 180)
-    const node = findTextNode(document.body, probe)
-    if (!node?.parentElement) return false
+    const needle = String(text || '').replace(/\s+/g, ' ').trim()
+    if (!needle) return false
 
-    const target = node.parentElement
-    target.scrollIntoView({ block: 'center', behavior: 'instant' })
-    target.dataset.sourceclipRestore = 'true'
-    target.style.outline = '2px solid #f2c94c'
-    target.style.outlineOffset = '4px'
-    target.style.borderRadius = '3px'
+    const { text: pageText, map } = buildNormalizedTextMap(document.body)
+    const index = pageText.indexOf(needle)
+    if (index < 0 || !map[index] || !map[index + needle.length - 1]) return false
 
-    window.setTimeout(() => {
-      if (target.dataset.sourceclipRestore !== 'true') return
-      target.style.outline = ''
-      target.style.outlineOffset = ''
-      target.style.borderRadius = ''
-      delete target.dataset.sourceclipRestore
-    }, 4500)
+    const start = map[index]
+    const end = map[index + needle.length - 1]
+    const range = document.createRange()
+    range.setStart(start.node, start.offset)
+    range.setEnd(end.node, Math.min(end.offset + 1, end.node.textContent?.length || 0))
 
+    const selection = window.getSelection()
+    if (!selection) return false
+
+    ensureRestoreSelectionStyle()
+    document.documentElement.dataset.sourceclipRestoring = 'true'
+    selection.removeAllRanges()
+    selection.addRange(range)
+
+    const rect = range.getBoundingClientRect()
+    const targetY = window.scrollY + rect.top - Math.max(80, (window.innerHeight - rect.height) / 2)
+    window.scrollTo({ left: window.scrollX, top: Math.max(0, targetY), behavior: 'instant' })
+
+    restoreTimer = window.setTimeout(clearRestoreHighlight, 4500)
     return true
   }
 

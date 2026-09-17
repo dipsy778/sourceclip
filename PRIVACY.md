@@ -12,15 +12,14 @@ When automatic capture is enabled and you copy selected text on a normal webpage
 - the time the clip was saved
 - whether the clip is pinned
 - the page scroll position and viewport size at the time of the copy
-- a compressed screenshot of the visible browser viewport at the time of the copy
 
-The screenshot can include other content that was visible on the page around the copied text. It is used as a local historical snapshot for the saved clip and is not uploaded anywhere.
+SourceClip does **not** capture or store screenshots or page images.
 
 Settings such as theme, capture state and history limit are also stored.
 
 ## Where data is stored
 
-All SourceClip data, including page snapshots, is stored in the browser's extension-local storage (`chrome.storage.local`).
+All SourceClip data is stored in the browser's extension-local storage (`chrome.storage.local`).
 
 The project contains no backend, database, analytics SDK, telemetry service, advertising system or account system.
 
@@ -29,7 +28,8 @@ The project contains no backend, database, analytics SDK, telemetry service, adv
 - It does not request clipboard-read permission.
 - It does not continuously inspect the operating system clipboard.
 - It does not intentionally capture password-input selections.
-- It does not send saved clips or screenshots to a server.
+- It does not capture or store screenshots or page images.
+- It does not send saved clips to a server.
 - It does not sell or share clipboard history.
 
 ## Website access
@@ -40,9 +40,11 @@ Browser-protected pages such as `chrome://` and `edge://` do not allow normal co
 
 ## Saved page state
 
-When you use the open-state button on a saved clip, SourceClip opens the original live URL, scrolls back to the saved position and attempts to locate and briefly highlight the copied text.
+When you use the open-state button on a saved clip, SourceClip opens the original live URL, scrolls back to the saved position and attempts to locate the copied text again.
 
-Websites can change after a clip is saved, so SourceClip cannot guarantee that a dynamic page will be identical later. The locally stored screenshot preserves a visual record of what was visible when the copy happened.
+When the copied text is found, SourceClip temporarily selects that text and highlights the selection in yellow so it is easy to spot. The highlight is applied to the live page and is not saved back to the website.
+
+Websites can change after a clip is saved, so SourceClip cannot guarantee that a dynamic page will be identical later or that the original text will still exist.
 
 ## Clearing data
 
