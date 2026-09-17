@@ -19,5 +19,5 @@
 }
 
 .sourceclip-status[data-enabled='false'] {
-  color: var(--muted);
+  color: #ff5c5c;
 }
