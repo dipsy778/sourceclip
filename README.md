@@ -8,10 +8,6 @@
 
 > Source-aware clipboard history for Windows. Copy text, keep the page it came from.
 
-<p align="center">
-  <img width="144" src="public/icons/sourceclip-128.png" alt="SourceClip logo">
-</p>
-
 ## Supported browsers
 
 <p align="center">
