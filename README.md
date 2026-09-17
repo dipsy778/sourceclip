@@ -2,10 +2,11 @@
 
 ![Build extension](https://github.com/dipsy778/sourceclip/actions/workflows/build.yml/badge.svg)
 ![Manifest V3](https://img.shields.io/badge/manifest-v3-black.svg?style=flat)
+![Windows](https://img.shields.io/badge/platform-Windows-0078D4.svg?style=flat)
 ![Local only](https://img.shields.io/badge/storage-local_only-brightgreen.svg?style=flat)
 ![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)
 
-> Source-aware clipboard history for Chrome and Edge. Copy text, keep the page it came from.
+> Source-aware clipboard history for Windows in Chrome and Edge. Copy text, keep the page it came from.
 
 <p align="center">
   <img width="144" src="public/icons/sourceclip-128.png" alt="SourceClip logo">
@@ -21,7 +22,7 @@ That's why SourceClip exists.
 
 ## Install
 
-SourceClip is currently distributed as an unpacked Chromium extension.
+SourceClip is currently distributed as an unpacked Chromium extension for Windows.
 
 ```bash
 npm install
@@ -52,25 +53,17 @@ Then load the generated `dist` folder into Chrome or Microsoft Edge.
 
 ### Copy from a webpage
 
-Highlight text on any normal `http://` or `https://` page and press `Ctrl + C`.
+Highlight text on any normal `http://` or `https://` page and press:
 
-SourceClip stores the copied text with the page title, website and URL.
+```text
+Ctrl + C
+```
+
+SourceClip stores the copied text with the page title, website and URL automatically.
 
 ### Save a selection manually
 
 Right-click highlighted text and choose **Save selection to SourceClip**.
-
-You can also use the keyboard shortcut:
-
-```text
-Ctrl + Shift + S
-```
-
-On macOS:
-
-```text
-Command + Shift + S
-```
 
 ### Copy with source
 
@@ -82,14 +75,14 @@ Search your saved clips by text, page title, website or URL, then click the sour
 
 ## Features
 
-- Automatic source-aware capture on normal webpages
+- Automatic source-aware capture with `Ctrl + C`
 - Search across copied text, page titles, domains and URLs
 - Copy text again with one click
 - Copy text together with a source link
 - Open the original page
 - Pin important clips
 - Delete clips or clear history
-- Adjustable history limit
+- Adjustable history limit from 1 to 250 clips
 - Light, dark and system themes
 - Local-only storage
 - No account, backend, analytics or telemetry
@@ -114,15 +107,16 @@ It does not request clipboard-read permission, does not continuously inspect you
 
 See [PRIVACY.md](PRIVACY.md) for the full privacy notes.
 
-## Browser Support
+## Platform Support
 
-SourceClip targets Chromium browsers that support Manifest V3 extensions.
+SourceClip is currently focused on **Windows 10 and Windows 11**.
 
-| Chrome | Edge | Brave | Arc |
-| :---: | :---: | :---: | :---: |
-| ✔ | ✔ | ✔ | ✔ |
+| Windows Browser | Support |
+| --- | :---: |
+| Google Chrome | ✔ |
+| Microsoft Edge | ✔ |
 
-Firefox support is not included yet because it needs separate Manifest V3 testing.
+Other platforms and browsers are not part of the current supported target.
 
 ## Next changes
 
@@ -147,7 +141,7 @@ Production build:
 npm run build
 ```
 
-Pull requests run a GitHub Actions build check to make sure the extension bundle contains the manifest, service worker, content script and popup.
+Pull requests run a GitHub Actions build check to make sure the extension bundle contains the manifest, service worker, content script, popup, icons and bundled fonts.
 
 ## License
 
