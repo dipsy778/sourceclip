@@ -96,9 +96,13 @@ button { color: inherit; }
   color: var(--muted);
   cursor: pointer;
   transition: 140ms ease;
+  outline: none;
+  box-shadow: none;
 }
 .icon-button:hover { background: var(--surface-soft); color: var(--text); }
-.icon-button.active { color: var(--text); background: var(--surface-soft); border-color: var(--border); }
+.icon-button.active { color: var(--text); background: var(--surface-soft); border-color: transparent; }
+.icon-button:focus,
+.icon-button:focus-visible { outline: none; box-shadow: none; }
 .icon-button.danger:hover { color: var(--danger); }
 
 .toolbar {
@@ -121,8 +125,10 @@ button { color: inherit; }
   color: var(--muted);
   box-shadow: 0 1px 1px rgba(0,0,0,.02);
 }
-.search-box:focus-within { border-color: var(--border-strong); box-shadow: 0 0 0 3px color-mix(in srgb, var(--text) 6%, transparent); }
-.search-box input { width: 100%; min-width: 0; border: 0; outline: 0; background: transparent; color: var(--text); font-size: 12.5px; }
+.search-box:focus-within { border-color: var(--border); box-shadow: 0 1px 1px rgba(0,0,0,.02); }
+.search-box input { width: 100%; min-width: 0; border: 0; outline: 0; background: transparent; color: var(--text); font-size: 12.5px; box-shadow: none; }
+.search-box input:focus,
+.search-box input:focus-visible { outline: none; box-shadow: none; }
 .search-box input::placeholder { color: var(--faint); }
 .toolbar > .icon-button { width: 38px; height: 38px; border-color: var(--border); background: var(--surface); }
 
@@ -210,8 +216,10 @@ kbd { border: 1px solid var(--border-strong); border-bottom-width: 2px; border-r
   padding: 0 9px;
   font-size: 11px;
   outline: none;
+  box-shadow: none;
 }
-.number-input:focus { border-color: var(--border-strong); box-shadow: 0 0 0 3px color-mix(in srgb, var(--text) 6%, transparent); }
+.number-input:focus,
+.number-input:focus-visible { border-color: var(--border); outline: none; box-shadow: none; }
 .theme-button { border: 1px solid var(--border); border-radius: 8px; background: var(--surface-soft); color: var(--text); height: 31px; padding: 0 9px; display: inline-flex; align-items: center; gap: 6px; text-transform: capitalize; font-size: 11px; cursor: pointer; }
 .clear-button { margin-top: 15px; width: 100%; height: 36px; border-radius: 9px; border: 1px solid var(--border); background: transparent; color: var(--danger); display: flex; align-items: center; justify-content: center; gap: 7px; font-size: 11px; cursor: pointer; }
 .clear-button:hover { background: color-mix(in srgb, var(--danger) 7%, transparent); }

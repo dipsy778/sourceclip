@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "SourceClip",
-  "description": "A privacy-first clipboard tool that remembers where copied text came from.",
+  "description": "A privacy-first clipboard tool for Windows that remembers where copied text came from.",
   "version": "0.1.2",
   "icons": {
     "16": "icons/sourceclip-16.png",
@@ -34,8 +34,7 @@
   "commands": {
     "save-selection": {
       "suggested_key": {
-        "default": "Ctrl+Shift+S",
-        "mac": "Command+Shift+S"
+        "default": "Ctrl+Shift+S"
       },
       "description": "Save the current selection to SourceClip"
     }
