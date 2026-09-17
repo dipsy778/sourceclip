@@ -8,10 +8,6 @@
 
 > Source-aware clipboard history for Windows in Chrome and Edge. Copy text, keep the page it came from.
 
-<p align="center">
-  <img width="144" src="public/icons/sourceclip-128.png" alt="SourceClip logo">
-</p>
-
 ## Why
 
 Copying from the web is easy. Remembering where that useful quote, code snippet, product note or research detail came from is the annoying part.
