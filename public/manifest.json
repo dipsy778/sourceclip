@@ -1,0 +1,31 @@
+{
+  "manifest_version": 3,
+  "name": "SourceClip",
+  "description": "A privacy-first clipboard tool that remembers where copied text came from.",
+  "version": "0.1.0",
+  "permissions": ["storage", "contextMenus", "clipboardWrite"],
+  "host_permissions": ["http://*/*", "https://*/*"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "SourceClip",
+    "default_popup": "index.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "commands": {
+    "save-selection": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+S",
+        "mac": "Command+Shift+S"
+      },
+      "description": "Save the current selection to SourceClip"
+    }
+  }
+}
