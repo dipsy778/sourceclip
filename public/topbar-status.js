@@ -33,7 +33,6 @@ function renderStatus(enabled) {
   if (!status) return false
   status.textContent = enabled ? 'On' : 'Off'
   status.dataset.enabled = String(enabled)
-  status.title = enabled ? 'SourceClip is enabled' : 'SourceClip is disabled'
   return true
 }
 
