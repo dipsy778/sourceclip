@@ -82,12 +82,30 @@ function createMenus() {
   })
 }
 
+async function injectIntoOpenTabs() {
+  const tabs = await chrome.tabs.query({})
+  await Promise.allSettled(
+    tabs.map((tab) => {
+      if (!tab.id || !/^https?:\/\//i.test(tab.url || '')) return Promise.resolve()
+      return chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        files: ['content.js'],
+      })
+    }),
+  )
+}
+
 chrome.runtime.onInstalled.addListener(async () => {
   await ensureDefaults()
   createMenus()
+  await injectIntoOpenTabs()
 })
 
-chrome.runtime.onStartup.addListener(ensureDefaults)
+chrome.runtime.onStartup.addListener(async () => {
+  await ensureDefaults()
+  createMenus()
+  await injectIntoOpenTabs()
+})
 
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   if (message?.type !== 'sourceclip-save') return false

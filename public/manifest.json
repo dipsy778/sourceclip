@@ -2,8 +2,8 @@
   "manifest_version": 3,
   "name": "SourceClip",
   "description": "A privacy-first clipboard tool that remembers where copied text came from.",
-  "version": "0.1.0",
-  "permissions": ["storage", "contextMenus", "clipboardWrite"],
+  "version": "0.1.1",
+  "permissions": ["storage", "contextMenus", "clipboardWrite", "scripting"],
   "host_permissions": ["http://*/*", "https://*/*"],
   "background": {
     "service_worker": "background.js"

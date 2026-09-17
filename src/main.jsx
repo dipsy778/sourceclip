@@ -342,10 +342,9 @@ function App() {
       )}
 
       <footer>
-        <span className={settings.captureEnabled ? 'status-dot on' : 'status-dot'} />
-        {settings.captureEnabled ? 'Auto capture is on' : 'Auto capture is off'}
+        <span>{settings.captureEnabled ? 'Auto capture is on' : 'Auto capture is off'}</span>
         <span className="footer-separator">·</span>
-        Local only
+        <span>Local only</span>
       </footer>
     </main>
   )

@@ -1,5 +1,5 @@
 :root {
-  font-family: 'Geist Variable', 'Geist Sans', Geist, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: 'Geist Variable', 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   color: #111214;
   background: #f7f7f5;
   font-synthesis: none;
@@ -184,9 +184,19 @@ kbd { border: 1px solid var(--border-strong); border-bottom-width: 2px; border-r
 .clear-button:hover { background: color-mix(in srgb, var(--danger) 7%, transparent); }
 .clear-button:disabled { opacity: .4; cursor: default; }
 
-footer { height: 35px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: center; color: var(--faint); font-size: 10px; flex: 0 0 auto; background: var(--bg); }
-.status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--faint); margin-right: 6px; }
-.status-dot.on { background: #5a9c6d; }
+footer {
+  width: 100%;
+  height: 35px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--faint);
+  font-size: 10px;
+  text-align: center;
+  flex: 0 0 auto;
+  background: var(--bg);
+}
 .footer-separator { margin: 0 6px; }
 
 @media (prefers-reduced-motion: reduce) {
