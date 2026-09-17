@@ -70,7 +70,6 @@ function IconButton({ label, active = false, danger = false, onClick, children }
     <button
       className={`icon-button${active ? ' active' : ''}${danger ? ' danger' : ''}`}
       type="button"
-      title={label}
       aria-label={label}
       onClick={onClick}
     >
@@ -358,7 +357,7 @@ function App() {
                       type="button"
                       onClick={() => openSource(clip.url)}
                       disabled={!clip.url}
-                      title={clip.url || undefined}
+                      aria-label={clip.url ? `Open ${hostLabel(clip)}` : hostLabel(clip)}
                     >
                       {hostLabel(clip)}
                     </button>
@@ -389,7 +388,7 @@ function App() {
                         className="clip-title"
                         type="button"
                         onClick={() => copyClip(clip)}
-                        title="Copy original text"
+                        aria-label="Copy original text"
                       >
                         {clipDisplayTitle(clip)}
                       </button>
@@ -399,7 +398,6 @@ function App() {
                       <button
                         className="edit-title-button"
                         type="button"
-                        title="Edit clip title"
                         aria-label="Edit clip title"
                         onClick={() => beginTitleEdit(clip)}
                       >
@@ -413,13 +411,13 @@ function App() {
                       className="original-clip-text"
                       type="button"
                       onClick={() => copyClip(clip)}
-                      title="Copy original text"
+                      aria-label="Copy original text"
                     >
                       {clip.text}
                     </button>
                   )}
 
-                  <div className="page-title" title={clip.title}>{clip.title}</div>
+                  <div className="page-title">{clip.title}</div>
 
                   <div className="clip-actions">
                     <button className="text-action" type="button" onClick={() => copyClip(clip)}>
