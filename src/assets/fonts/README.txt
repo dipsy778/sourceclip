@@ -1,0 +1,1 @@
+SourceClip bundles Geist font files from the project-provided font package. Do not load fonts from a CDN.
